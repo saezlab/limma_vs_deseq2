@@ -16,7 +16,11 @@ vsn_limma_DA <- as.data.frame(
 vsn_limma_DA_with_low_expr <- as.data.frame(
   read_csv("results/vsn_limma_DA_with_low_expr.csv"))
 
-ttops <- list(DESeq2_DA, vsn_limma_DA, vsn_limma_DA_with_low_expr)
+edgeR_DA <- as.data.frame(read_csv("results/edgeR_DA.csv"))
+names(edgeR_DA)[1] <- "ID"
+edgeR_DA$t <- edgeR_DA$t * -1
+
+ttops <- list(DESeq2_DA, vsn_limma_DA, vsn_limma_DA_with_low_expr, edgeR_DA)
 
 dorothea <- dorothea_hs
 dorothea <- dorothea[dorothea$confidence %in% c("A","B","C"),]
@@ -48,7 +52,8 @@ for(ttop in ttops)
 
 TF_merge_mlm <- merge(TF_res[[1]][,c(2,4)],TF_res[[2]][,c(2,4)], by = "source")
 TF_merge_mlm <- merge(TF_merge_mlm,TF_res[[3]][,c(2,4)], by = "source")
-names(TF_merge_mlm) <- c("tf","DESeq2_mlm","limma_filter_mlm","limma_full_mlm")
+TF_merge_mlm <- merge(TF_merge_mlm,TF_res[[4]][,c(2,4)], by = "source")
+names(TF_merge_mlm) <- c("tf","DESeq2_mlm","limma_filter_mlm","limma_full_mlm","edgeR_mlm")
 
 TF_res <- list()
 inputs <- list()
@@ -76,7 +81,8 @@ for(ttop in ttops)
 
 TF_merge_wmean <- merge(TF_res[[1]][,c(2,4)],TF_res[[2]][,c(2,4)], by = "source")
 TF_merge_wmean <- merge(TF_merge_wmean,TF_res[[3]][,c(2,4)], by = "source")
-names(TF_merge_wmean) <- c("tf","DESeq2_wmean","limma_filter_wmean","limma_full_wmean")
+TF_merge_wmean <- merge(TF_merge_wmean,TF_res[[4]][,c(2,4)], by = "source")
+names(TF_merge_wmean) <- c("tf","DESeq2_wmean","limma_filter_wmean","limma_full_wmean","edgeR_wmean")
 
 
 full_merge <- merge(TF_merge_mlm, TF_merge_wmean)
@@ -84,3 +90,5 @@ row.names(full_merge) <- full_merge$tf
 full_merge <- full_merge[,-1]
 
 pheatmap::pheatmap(full_merge, display_numbers = F, show_rownames = F)
+
+pheatmap::pheatmap(cor(full_merge), display_numbers = T, show_rownames = T, show_colnames = F)

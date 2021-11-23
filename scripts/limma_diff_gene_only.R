@@ -65,3 +65,7 @@ limmaRes <- runLimma(measurements = count_df_vsn,
 
 #once limma has run, we extract the statistic dataframe summarise the differential analysis
 ttop_KOvsWT <- ttopFormatter(topTable(limmaRes[[1]], coef = 1, number = length(count_df_vsn[,1]), adjust.method = "fdr"))
+
+cor.test(ttop_KOvsWT$AveExpr, -log10(ttop_KOvsWT$adj.P.Val))
+
+plot(ttop_KOvsWT$AveExpr, -log10(ttop_KOvsWT$adj.P.Val))
