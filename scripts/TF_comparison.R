@@ -84,7 +84,6 @@ TF_merge_wmean <- merge(TF_merge_wmean,TF_res[[3]][,c(2,4)], by = "source")
 TF_merge_wmean <- merge(TF_merge_wmean,TF_res[[4]][,c(2,4)], by = "source")
 names(TF_merge_wmean) <- c("tf","DESeq2_wmean","limma_filter_wmean","limma_full_wmean","edgeR_wmean")
 
-
 full_merge <- merge(TF_merge_mlm, TF_merge_wmean)
 row.names(full_merge) <- full_merge$tf
 full_merge <- full_merge[,-1]
