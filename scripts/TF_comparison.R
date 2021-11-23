@@ -91,3 +91,18 @@ full_merge <- full_merge[,-1]
 pheatmap::pheatmap(full_merge, display_numbers = F, show_rownames = F)
 
 pheatmap::pheatmap(cor(full_merge), display_numbers = T, show_rownames = T, show_colnames = F)
+
+SDs <- apply(full_merge, 1, sd)
+plot(hist(SDs, breaks = 100)) #1.5
+
+pheatmap::pheatmap(full_merge[SDs > 1.5,], display_numbers = T)
+
+SDs_mlm <- apply(full_merge[c(1:4)], 1, sd)
+plot(hist(SDs_mlm, breaks = 100))
+SDs_wmean <- apply(full_merge[c(5:8)], 1, sd)
+plot(hist(SDs_wmean, breaks = 100))
+
+SDs_no_method_dif <- rowMeans(cbind(SDs_mlm, SDs_wmean))
+plot(hist(SDs_no_method_dif, breaks = 100)) #1
+
+pheatmap::pheatmap(full_merge[SDs_no_method_dif > 1,], display_numbers = T)
